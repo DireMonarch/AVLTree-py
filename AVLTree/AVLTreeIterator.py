@@ -16,8 +16,14 @@ the AVL Balanced Binary Search Tree. If not, see <https:// www.gnu.org/licenses/
 '''
 from enum import Enum
 
-from AVLTreeNode import AVLTreeNode
+from . import AVLTreeNode
 
+class StatusEnum(Enum):
+    '''Enum used to track Iterator status'''
+    OK = 0
+    BEFORE_FIRST = 1
+    AFTER_LAST = 2
+    INVALID = 3
 
 class AVLTreeIterator():
     '''
@@ -31,12 +37,7 @@ class AVLTreeIterator():
     @param <TValue>
                Generic type representing the data being stored.
     '''
-    class StatusEnum(Enum):
-        '''Enum used to track Iterator status'''
-        OK = 0
-        BEFORE_FIRST = 1
-        AFTER_LAST = 2
-        INVALID = 3
+
         
     def __init__(self, root:AVLTreeNode):
         '''
@@ -47,7 +48,7 @@ class AVLTreeIterator():
         @throws Exception
         '''
         self._current = None
-        self._status = AVLTreeIterator.StatusEnum.BEFORE_FIRST
+        self._status = StatusEnum.BEFORE_FIRST
         self._stack = []
         self._root = root
         
@@ -58,7 +59,7 @@ class AVLTreeIterator():
         Moves the current pointer to the next element. The next element is
         determined by the traversal method.
         
-        @return True if MoveNext was successful and there was a valid element to
+        @return True if _move_next was successful and there was a valid element to
                 move to, otherwise false.
         @throws Exception
         '''
@@ -71,13 +72,14 @@ class AVLTreeIterator():
         @return The TValue element at the current pointer location.
         @throws Exception
         '''
-        if self._status == AVLTreeIterator.StatusEnum.OK or self._status == AVLTreeIterator.StatusEnum.INVALID:
+        if self._status == StatusEnum.OK or self._status == StatusEnum.INVALID:
             return_value = self._current.get_tuple()
             self._move_next()
             return return_value
-        if self._status == AVLTreeIterator.StatusEnum.BEFORE_FIRST:
-            raise Exception('! Before first element of AVL Search Tree, Call MoveNext first !')
-        if self._status == AVLTreeIterator.StatusEnum.AFTER_LAST:
-            raise Exception('! After Last element of AVL Search Tree !')
+        if self._status == StatusEnum.BEFORE_FIRST:
+            raise Exception('! Before first element of AVL Search Tree, Call _move_next first !')
+        if self._status == StatusEnum.AFTER_LAST:
+            raise StopIteration
+            # raise Exception('! After Last element of AVL Search Tree !')
         raise Exception('! Unknown Status during iteration !')
         

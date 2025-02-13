@@ -16,10 +16,10 @@ the AVL Balanced Binary Search Tree. If not, see <https:// www.gnu.org/licenses/
 '''
 
 from enum import Enum
-from AVLTreeNode import AVLTreeNode
-from AVLTreeInOrderIterator import AVLTreeInOrderIterator
-from AVLTreeReverseOrderIterator import AVLTreeReverseOrderIterator
-from AVLTreeTopDownOrderIterator import AVLTreeTopDownOrderIterator
+from . import AVLTreeNode
+from . import AVLTreeInOrderIterator
+from . import AVLTreeReverseOrderIterator
+from . import AVLTreeTopDownOrderIterator
 
 class AVLTreeTraversalMethod(Enum):
     '''enum used to determine the order of Iteration traversal of an AVLTree.'''
@@ -64,8 +64,7 @@ class AVLTree():
         self._count = 0
         self.traversal_method = AVLTreeTraversalMethod.IN_ORDER
 
-    @property
-    def count(self):
+    def __len__(self):
         '''Returns the number of elements in the tree.'''
         return self._count
 
@@ -91,7 +90,7 @@ class AVLTree():
         @throws IndexError if no node exists at key
         '''
 
-        current:AVLTreeNode = self._root
+        current:AVLTreeNode.AVLTreeNode = self._root
 
         while current is not None:
             if current.key == key:
@@ -118,7 +117,7 @@ class AVLTree():
         '''
         
         stack = []
-        node = AVLTreeNode(key, value)
+        node = AVLTreeNode.AVLTreeNode(key, value)
         
         current = self._root
         parent = None
@@ -140,32 +139,32 @@ class AVLTree():
                 parent = current
                 current = current._left
                 
-            self.count += 1
+        self._count += 1
+        
+        if parent is None:  # Empty Tree
+            self._root = node
             
-            if parent is None:  # Empty Tree
-                self._root = node
-                
+        else:
+            if node.key > parent.key:
+                # node.key > parent.key, add to right
+                parent._right = node
             else:
-                if node.key > parent.key:
-                    # node.key > parent.key, add to right
-                    parent._right = node
-                else:
-                    # node.key < parent.key, add to left
-                    parent._left = node
-                    
-            # Go back up the tree and reset height
+                # node.key < parent.key, add to left
+                parent._left = node
+                
+        # Go back up the tree and reset height
+        current = stack.pop()
+        while current is not None:
+            current._calculate_height()
+            if current.balance_factor > 1:
+                if current._left.balance_factor < 0:
+                    self._rotate_left(current._left, current)
+                self._rotate_right(current, stack[-1])
+            elif current.balance_factor < -1:
+                if current._right.balance_factor > 0:
+                    self._rotate_right(current._right, current)
+                self._rotate_left(current, stack[-1])
             current = stack.pop()
-            while current is not None:
-                current._calculate_height()
-                if current.balance_factor > 1:
-                    if current._left.balance_factor < 0:
-                        self._rotate_left(current._left, current)
-                    self._rotate_right(current, stack[-1])
-                elif current.balance_factor < -1:
-                    if current._right.balance_factor > 0:
-                        self._rotate_right(current._right, current)
-                    self._rotate_left(current, stack[-1])
-                current = stack.pop()
 
     def remove(self, key):
         '''
@@ -304,7 +303,7 @@ class AVLTree():
         if self._root is None:
             return None
 
-        current:AVLTreeNode = self._root
+        current:AVLTreeNode.AVLTreeNode = self._root
         while current._left is not None:
             current = current._left
         return current.key
@@ -314,7 +313,7 @@ class AVLTree():
         if self._root is None:
             return None
 
-        current:AVLTreeNode = self._root
+        current:AVLTreeNode.AVLTreeNode = self._root
         while current._right is not None:
             current = current._right
         return current.key
@@ -374,10 +373,10 @@ class AVLTree():
     
     def __iter__(self):
         
-        match self._iter_order:
+        match self.traversal_method:
             case AVLTreeTraversalMethod.IN_ORDER:
-                return AVLTreeInOrderIterator(self._root)
+                return AVLTreeInOrderIterator.AVLTreeInOrderIterator(self._root)
             case AVLTreeTraversalMethod.REVERSE_ORDER:
-                return AVLTreeReverseOrderIterator(self._root)
+                return AVLTreeReverseOrderIterator.AVLTreeReverseOrderIterator(self._root)
             case AVLTreeTraversalMethod.TOP_DOWN:
-                return AVLTreeTopDownOrderIterator(self._root)
+                return AVLTreeTopDownOrderIterator.AVLTreeTopDownOrderIterator(self._root)

@@ -14,9 +14,9 @@ A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 the AVL Balanced Binary Search Tree. If not, see <https:// www.gnu.org/licenses/>.
 '''
-from AVLTreeIterator import AVLTreeIterator
+from . import AVLTreeIterator
 
-class AVLTreeInOrderIterator(AVLTreeIterator):
+class AVLTreeInOrderIterator(AVLTreeIterator.AVLTreeIterator):
     '''
     Iterates an AVL tree in natural order represented by the Key.  This iterator traverses the AVLTree in the natural order as determined by comparing TKey.
     

@@ -14,9 +14,9 @@ A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along with
 the AVL Balanced Binary Search Tree. If not, see <https:// www.gnu.org/licenses/>.
 '''
-from AVLTreeIterator import AVLTreeIterator
+from . import AVLTreeIterator
 
-class AVLTreeTopDownOrderIterator(AVLTreeIterator):
+class AVLTreeTopDownOrderIterator(AVLTreeIterator.AVLTreeIterator):
     '''
     Iterates an AVL tree in top down order. This iterator traverses the AVLTree
     in special way that is useful for serializing or saving the tree for the
@@ -34,8 +34,8 @@ class AVLTreeTopDownOrderIterator(AVLTreeIterator):
     '''
     
     def __init__(self, root):
-        AVLTreeIterator.__init__(self, root)
         self.queue = []
+        AVLTreeIterator.AVLTreeIterator.__init__(self, root)
         
     def _move_next(self):
         '''
