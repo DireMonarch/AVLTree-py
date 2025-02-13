@@ -85,7 +85,7 @@ class AVLTree():
 
         @param Key Key to locate in the tree.
 
-        @return AVLTreeNode at key.
+        @return value of AVLTreeNode at key.
 
         @throws IndexError if no node exists at key
         '''
@@ -94,7 +94,7 @@ class AVLTree():
 
         while current is not None:
             if current.key == key:
-                return current
+                return current.value
 
             if current.key < key:
                 current = current._right
@@ -103,6 +103,30 @@ class AVLTree():
 
         #If we are here, then we didn't find key in the tree
         raise IndexError(f'! Key {key} not present in Tree !')
+
+    def get(self, key, default_value):
+        '''
+        Gets an AVLTreeNode indexed by key. This is the equivalent of an array
+        indexer.
+
+        @param Key Key to locate in the tree.
+
+        @return value of AVLTreeNode at key, or default value if key is not found.
+        '''
+
+        current:AVLTreeNode.AVLTreeNode = self._root
+
+        while current is not None:
+            if current.key == key:
+                return current.value
+
+            if current.key < key:
+                current = current._right
+            else:
+                current = current._left
+
+        #If we are here, then we didn't find key in the tree
+        return default_value
 
     def __setitem__(self, key, value):
         '''
@@ -128,7 +152,9 @@ class AVLTree():
             stack.append(current)
             
             if node.key == current.key:
-                raise IndexError(f'! Key {key} already exists in Tree !')
+                current.value = value
+                return
+                # raise IndexError(f'! Key {key} already exists in Tree !')
             
             elif node.key > current.key:
                 # node.key > current.key --> Go Right
